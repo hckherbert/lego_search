@@ -12,7 +12,7 @@ export async function getLegoColors(): Promise<LegoColor[]> {
     throw new Error("Missing REBRICKABLE_API_KEY in environment variables.");
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}lego/colors/?ordering=name`, {
+  const res = await fetch(`${process.env.API_BASE_URL}lego/colors`, {
     headers: {
       'Authorization': `key ${apiKey}`
     }
