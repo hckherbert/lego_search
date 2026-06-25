@@ -17,11 +17,21 @@ export async function GET(
     const decodedSearchKey = decodeURIComponent(searchKey);
 
     const data = await getParts(decodedSearchKey);
-    return  NextResponse.json(data);
-    
+    return  NextResponse.json(formatSearchData(data));
     
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+const formatSearchData = (rawData: any): SearchResult[] => {
+    return rawData.map(el=>{
+        return {
+            part_num:  el.part_num,
+            name: el.name,
+            part_img_url: el.part_img_url
+        }
+});
+ 
 }

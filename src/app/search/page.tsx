@@ -26,7 +26,7 @@ export default function SearchBar() {
         throw new Error('Failed to fetch parts');
       }
   
-       const data = (await res.json()) as SearchResult[]
+       const data = await res.json();
        console.log('Search results:', data);
 
     } catch (error) {
