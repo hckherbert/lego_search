@@ -1,5 +1,3 @@
-// src/app/colors/page.tsx
-
 import { getLegoColors, LegoColor } from '@/lib/legoClient';
 import { buildRainbowPalette } from '@/lib/colorUtils';
 
@@ -8,7 +6,7 @@ import Button from '@mui/material/Button';
  
 export default async function ColorsPage() {
   const rawColors: LegoColor[] = await getLegoColors();
-  
+
   // Magic happens here:
   const rainbowGroups = buildRainbowPalette(rawColors);
 
