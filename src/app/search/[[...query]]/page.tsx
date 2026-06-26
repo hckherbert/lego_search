@@ -3,6 +3,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Box, TextField, Button } from '@mui/material';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import {SearchResult} from '../../../lib/legoClient';
+
 
 export default function SearchBar() {
   const router = useRouter();
@@ -14,6 +23,7 @@ export default function SearchBar() {
     : '';
 
   const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   
   // Keep track of the last successful fetch to deduplicate rapid back-to-back triggers
   const lastFetchTrack = useRef({ query: '', time: 0 });
@@ -36,6 +46,7 @@ export default function SearchBar() {
       const res = await fetch(`/api/parts/${encodeURIComponent(queryText)}`);
       if (!res.ok) throw new Error('Failed to fetch parts');
       const data = await res.json();
+      setSearchResults(data);
       console.log('✅ Search results received:', data);
     } catch (error) {
       console.error('❌ API Error:', error);
@@ -66,7 +77,8 @@ export default function SearchBar() {
   }, [urlQuery]); 
 
   return (
-    <Box sx={{ display: 'flex', gap: 1, p: 2, maxWidth: 500 }}>
+    <Box>
+    <Box sx={{ display: 'flex', gap: 1, p: 2 }}>
       <TextField
         fullWidth
         variant="outlined"
@@ -81,6 +93,36 @@ export default function SearchBar() {
       <Button variant="contained" onClick={handleSearchClick}>
         Search
       </Button>
+    </Box>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>part num</TableCell>
+            <TableCell align="right">part name</TableCell>
+            <TableCell align="right">image</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {searchResults.map((row:SearchResult) => (
+            <TableRow
+              key={row.part_num}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.part_num}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">
+                {row.part_img_url}
+                </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
     </Box>
   );
 }
