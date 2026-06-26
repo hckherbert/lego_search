@@ -36,11 +36,13 @@ export async function getParts(searchKey: string): Promise<SearchResult[]> {
 
   const apiKey = process.env.REBRICKABLE_API_KEY;
 
+  console.log('🚀 Fetching parts for searchKey:', searchKey);
+
   if (!apiKey) {
     throw new Error("Missing REBRICKABLE_API_KEY in environment variables.");
   }
 
-  const res = await fetch(`${process.env.API_BASE_URL}lego/parts?q=${encodeURIComponent(searchKey)}`, {
+  const res = await fetch(`${process.env.API_BASE_URL}lego/parts?search=${encodeURIComponent(searchKey)}`, {
     headers: {
       'Authorization': `key ${apiKey}`
     }
@@ -52,5 +54,8 @@ export async function getParts(searchKey: string): Promise<SearchResult[]> {
 
   const data = await res.json();
   //return data.results as SearchResult[]; 
+  data.results = data.results.filter((el: SearchResult): el is SearchResult => {
+    return el.part_img_url!== '' && el.part_img_url !== null;
+  })
   return data.results;
 }

@@ -3,13 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Box, TextField, Button } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Masonry from '@mui/lab/Masonry';
+import { styled } from '@mui/material/styles';
+import Image from 'next/image'
 import {SearchResult} from '../../../lib/legoClient';
 
 
@@ -27,6 +24,18 @@ export default function SearchBar() {
   
   // Keep track of the last successful fetch to deduplicate rapid back-to-back triggers
   const lastFetchTrack = useRef({ query: '', time: 0 });
+
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(0.5),
+    textAlign: 'left',
+    color: (theme.vars || theme).palette.text.secondary,
+    ...theme.applyStyles('dark', {
+      backgroundColor: '#1A2027',
+    }),
+  }));
 
   // 1. Core API Fetching Function
   const executeSearch = async (queryText: string) => {
@@ -78,51 +87,41 @@ export default function SearchBar() {
 
   return (
     <Box>
-    <Box sx={{ display: 'flex', gap: 1, p: 2 }}>
-      <TextField
-        fullWidth
-        variant="outlined"
-        placeholder="Type your search here..."
-        size="small"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') handleSearchClick();
-        }}
-      />
-      <Button variant="contained" onClick={handleSearchClick}>
-        Search
-      </Button>
-    </Box>
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>part num</TableCell>
-            <TableCell align="right">part name</TableCell>
-            <TableCell align="right">image</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {searchResults.map((row:SearchResult) => (
-            <TableRow
-              key={row.part_num}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.part_num}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">
-                {row.part_img_url}
-                </TableCell>
-            </TableRow>
+      <Box sx={{ display: 'flex', gap: 1, p: 2 }}>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Type your search here..."
+          size="small"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearchClick();
+          }}
+        />
+        <Button variant="contained" onClick={handleSearchClick}>
+          Search
+        </Button>
+      </Box>
+
+        <Masonry columns={6} spacing={2}>
+          {searchResults.map((item, index) => (
+            <Item key={index}>
+              {item.name}
+              <img
+                src={item.part_img_url}
+                alt={item.name}
+                loading="lazy"
+                style={{
+                  borderBottomLeftRadius: 4,
+                  borderBottomRightRadius: 4,
+                  display: 'block',
+                  width: '100%',
+                }}
+              />
+            </Item>
           ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+        </Masonry>
     </Box>
   );
 }
