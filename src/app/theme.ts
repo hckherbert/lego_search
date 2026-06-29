@@ -12,10 +12,16 @@ const theme = createTheme({
     secondary: {
       main: '#C7CDAA', // Your custom secondary color (e.g., green)
     },
+    text: {
+      primary: '#1a1a1a',    
+      secondary: '#4a4a4a',  
+    },
   },
   typography: {
     //fontFamily: 'var(--font-roboto)',
-    fontFamily: "Cormorant Garamond"
+    fontFamily: "Cormorant Garamond",
+    fontSize: 16, // MUI default is 14
+    htmlFontSize: 16,
   },
   cssVariables: true
 });

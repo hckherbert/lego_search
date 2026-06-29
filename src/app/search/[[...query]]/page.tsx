@@ -29,9 +29,10 @@ export default function SearchBar() {
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
     ...theme.typography.body2,
-    padding: theme.spacing(0.5),
+    padding: theme.spacing(1),
     textAlign: 'left',
     color: (theme.vars || theme).palette.text.secondary,
+    fontSize: '18px',
     ...theme.applyStyles('dark', {
       backgroundColor: '#1A2027',
     }),
@@ -104,7 +105,16 @@ export default function SearchBar() {
         </Button>
       </Box>
 
-        <Masonry columns={6} spacing={2}>
+        <Masonry 
+          columns={{ 
+          xs: 2,   // Mobile Portrait (2 cols)
+          sm: 3,   // Mobile Landscape / iPad Portrait (3 cols)
+          md: 5,   // iPad Landscape / Small Laptop (5 cols)
+          lg: 6,   // Wide Screen (8 cols)
+          xl: 7   // Ultra-wide (Optional: 10 cols)
+        }}
+          spacing={2}
+        >
           {searchResults.map((item, index) => (
             <Item key={index}>
               {item.name}
