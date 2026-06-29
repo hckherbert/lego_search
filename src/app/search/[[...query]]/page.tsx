@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Box, TextField, Button } from '@mui/material';
+import { Box, Container, TextField, Button } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
 import { styled } from '@mui/material/styles';
@@ -28,8 +28,8 @@ export default function SearchBar() {
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
+    ...theme.typography.body1,
+    padding: theme.spacing(0.5),
     textAlign: 'left',
     color: (theme.vars || theme).palette.text.secondary,
     fontSize: '18px',
@@ -88,7 +88,7 @@ export default function SearchBar() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', gap: 1, p: 2 }}>
+      <Box sx={{ display: 'flex', gap: 1, p: 1 }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -104,34 +104,44 @@ export default function SearchBar() {
           Search
         </Button>
       </Box>
-
-        <Masonry 
-          columns={{ 
-          xs: 2,   // Mobile Portrait (2 cols)
-          sm: 3,   // Mobile Landscape / iPad Portrait (3 cols)
-          md: 5,   // iPad Landscape / Small Laptop (5 cols)
-          lg: 6,   // Wide Screen (8 cols)
-          xl: 7   // Ultra-wide (Optional: 10 cols)
+      
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', // Centers the Masonry grid horizontally
+          width: '100%',
+          p: 2
         }}
-          spacing={2}
-        >
-          {searchResults.map((item, index) => (
-            <Item key={index}>
-              {item.name}
-              <img
-                src={item.part_img_url}
-                alt={item.name}
-                loading="lazy"
-                style={{
-                  borderBottomLeftRadius: 4,
-                  borderBottomRightRadius: 4,
-                  display: 'block',
-                  width: '100%',
-                }}
-              />
-            </Item>
-          ))}
-        </Masonry>
-    </Box>
+      >
+          <Masonry 
+            columns={{ 
+            xs: 2,   // Mobile Portrait (2 cols)
+            sm: 3,   // Mobile Landscape / iPad Portrait (3 cols)
+            md: 5,   // iPad Landscape / Small Laptop (5 cols)
+            lg: 6,   // Wide Screen (8 cols)
+            xl: 7   // Ultra-wide (Optional: 10 cols)
+          }}
+            spacing={2}
+          >
+            {searchResults.map((item, index) => (
+              <Item key={index}>
+                {item.name}
+                <p>{ item.part_num} </p>
+                <img
+                  src={item.part_img_url}
+                  alt={item.name}
+                  loading="lazy"
+                  style={{
+                    borderBottomLeftRadius: 4,
+                    borderBottomRightRadius: 4,
+                    display: 'block',
+                    width: '100%',
+                  }}
+                />
+              </Item>
+            ))}
+          </Masonry>
+         </Box>
+     </Box>
   );
 }

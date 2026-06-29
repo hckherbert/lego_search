@@ -22,6 +22,9 @@ const theme = createTheme({
     fontFamily: "Cormorant Garamond",
     fontSize: 16, // MUI default is 14
     htmlFontSize: 16,
+    body1: {
+      lineHeight: 1
+    }
   },
   cssVariables: true
 });
