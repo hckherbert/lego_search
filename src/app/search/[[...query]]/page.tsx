@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Box, Container, TextField, Button } from '@mui/material';
+import { Box, Container, Typography, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
 import { styled } from '@mui/material/styles';
@@ -21,10 +22,20 @@ export default function SearchBar() {
 
   const [searchQuery, setSearchQuery] = useState(urlQuery);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+
+  // Track which item object is currently open in the modal (null means closed)
+  const [activeItem, setActiveItem] = useState<SearchResult | null>(null);
   
   // Keep track of the last successful fetch to deduplicate rapid back-to-back triggers
   const lastFetchTrack = useRef({ query: '', time: 0 });
 
+  const handleOpenModal = (item:SearchResult) => {
+    setActiveItem(item);
+  };
+
+  const handleCloseModal = () => {
+    setActiveItem(null);
+  };
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -124,7 +135,7 @@ export default function SearchBar() {
             spacing={2}
           >
             {searchResults.map((item, index) => (
-              <Item key={index}>
+              <Item key={index} onClick={handleOpenModal}>
                 {item.name}
                 <p>{ item.part_num} </p>
                 <img
@@ -141,6 +152,39 @@ export default function SearchBar() {
               </Item>
             ))}
           </Masonry>
+
+
+          <Dialog 
+            open={Boolean(activeItem)} // Opens when activeItem is not null
+            onClose={handleCloseModal}
+            maxWidth="sm"              // Sets the responsive width limit
+            fullWidth                  // Forces the modal to stretch up to the maxWidth
+          >
+            {/* Optional Close Button in Top Right */}
+            <IconButton
+              aria-label="close"
+              onClick={handleCloseModal}
+              sx={{ position: 'absolute', right: 8, top: 8, color: 'text.secondary' }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <DialogTitle sx={{ fontWeight: 'bold', pr: 6 }}>
+              {activeItem?.name}
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                Content here
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCloseModal} variant="contained" color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
          </Box>
      </Box>
   );
